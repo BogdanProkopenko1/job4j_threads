@@ -3,8 +3,19 @@ package ru.job4j.concurrent;
 public class ConcurrentOutput {
 
     public static void main(String[] args) {
-        new Thread(() -> System.out.println(Thread.currentThread().getName())).start();
-        new Thread(() -> System.out.println(Thread.currentThread().getName())).start();
-        System.out.println(Thread.currentThread().getName());
+        Thread first = new Thread(() -> System.out.println(Thread.currentThread().getName()));
+        Thread second = new Thread(() -> System.out.println(Thread.currentThread().getName()));
+        System.out.println(first.getName() + " -> " + first.getState());
+        System.out.println(second.getName() + " -> " + second.getState());
+        first.start();
+        second.start();
+        while (first.getState() != Thread.State.TERMINATED) {
+            System.out.println(first.getName() + " -> " + first.getState());
+        }
+        while (first.getState() != Thread.State.TERMINATED) {
+            System.out.println(second.getName() + " -> " + second.getState());
+        }
+        System.out.println(first.getName() + " -> job finished");
+        System.out.println(second.getName() + " -> job finished");
     }
 }
