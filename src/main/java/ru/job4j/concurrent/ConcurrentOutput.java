@@ -10,7 +10,7 @@ public class ConcurrentOutput {
         first.start();
         second.start();
         while (first.getState() != Thread.State.TERMINATED
-                && first.getState() != Thread.State.TERMINATED) {
+                || first.getState() != Thread.State.TERMINATED) {
             System.out.println(first.getName() + " -> " + first.getState());
             System.out.println(second.getName() + " -> " + second.getState());
         }
