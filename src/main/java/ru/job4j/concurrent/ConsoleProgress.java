@@ -8,7 +8,7 @@ public class ConsoleProgress implements Runnable {
         int flag = 0;
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                if (flag == 3) {
+                if (flag == process.length) {
                     flag = 0;
                 }
                 System.out.print("\r load: " + process[flag++]);
@@ -22,7 +22,7 @@ public class ConsoleProgress implements Runnable {
     public static void main(String[] args) throws InterruptedException {
         Thread progress = new Thread(new ConsoleProgress());
         progress.start();
-        Thread.sleep(1000); /* симулируем выполнение параллельной задачи в течение 1 секунды. */
+        Thread.sleep(1000);
         progress.interrupt();
     }
 }
