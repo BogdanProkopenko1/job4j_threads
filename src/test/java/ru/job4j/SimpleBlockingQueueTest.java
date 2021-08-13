@@ -20,16 +20,6 @@ public class SimpleBlockingQueueTest {
                 exp.add(i);
             }
         }
-        Thread first = new Thread(() -> {
-            queue.offer(1);
-            queue.offer(3);
-            queue.offer(5);
-            queue.offer(7);
-            queue.offer(9);
-            queue.offer(11);
-            queue.offer(13);
-            queue.offer(15);
-        });
         Thread second = new Thread(() -> {
             rsl.add(queue.poll());
             rsl.add(queue.poll());
@@ -40,8 +30,18 @@ public class SimpleBlockingQueueTest {
             rsl.add(queue.poll());
             rsl.add(queue.poll());
         });
-        first.start();
+        Thread first = new Thread(() -> {
+            queue.offer(1);
+            queue.offer(3);
+            queue.offer(5);
+            queue.offer(7);
+            queue.offer(9);
+            queue.offer(11);
+            queue.offer(13);
+            queue.offer(15);
+        });
         second.start();
+        first.start();
         first.join();
         second.join();
         assertThat(rsl, is(exp));

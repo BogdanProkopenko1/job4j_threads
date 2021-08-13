@@ -12,15 +12,25 @@ public class SimpleBlockingQueue<T> {
     @GuardedBy("this")
 
     private volatile Queue<T> queue = new LinkedList<T>();
+    private final int size;
+
+    public SimpleBlockingQueue() {
+        size = Integer.MAX_VALUE;
+    }
+
+    private SimpleBlockingQueue(int capacity) {
+        size = capacity;
+    }
 
     public synchronized void offer(T value) {
-        while (!queue.offer(value)) {
+        while (queue.size() == size) {
             try {
                 wait();
             } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
+        queue.offer(value);
         notify();
     }
 
@@ -29,10 +39,14 @@ public class SimpleBlockingQueue<T> {
             try {
                 wait();
             } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
         notify();
         return queue.poll();
+    }
+
+    public synchronized boolean isEmpty() {
+        return queue.isEmpty();
     }
 }
