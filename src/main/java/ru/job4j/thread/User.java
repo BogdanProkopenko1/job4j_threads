@@ -1,5 +1,7 @@
 package ru.job4j.thread;
 
+import java.util.Objects;
+
 public class User {
 
     private volatile int id;
@@ -20,5 +22,18 @@ public class User {
 
     public synchronized void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getId() == user.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

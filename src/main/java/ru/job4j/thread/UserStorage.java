@@ -3,22 +3,21 @@ package ru.job4j.thread;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @ThreadSafe
 public class UserStorage {
 
     @GuardedBy("this")
 
-    private volatile List<User> users = new ArrayList<User>();
+    private volatile Map<User, User> users = new HashMap<>();
 
     public synchronized boolean add(User user) {
-        return users.add(user);
+        return users.put(user, user) != null;
     }
 
     public synchronized boolean update(User user) {
-        User user1 = users.get(user.getId());
+        User user1 = users.get(user);
         if (user1 != null) {
             user1.setAmount(user1.getAmount() + user.getAmount());
             return true;
@@ -27,7 +26,7 @@ public class UserStorage {
     }
 
     public synchronized boolean delete(User user) {
-        return users.remove(user);
+        return users.remove(user) != null;
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
