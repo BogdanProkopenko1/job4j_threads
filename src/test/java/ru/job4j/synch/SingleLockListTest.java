@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.Set;
 import java.util.TreeSet;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
