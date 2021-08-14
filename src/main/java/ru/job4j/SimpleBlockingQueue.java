@@ -18,29 +18,32 @@ public class SimpleBlockingQueue<T> {
         size = Integer.MAX_VALUE;
     }
 
-    public SimpleBlockingQueue(int capacity) {
+    private SimpleBlockingQueue(int capacity) {
         size = capacity;
     }
 
-    public synchronized void offer(T value) throws InterruptedException {
-        while (this.queue.size() == this.size) {
-            wait();
+    public synchronized void offer(T value) {
+        while (queue.size() == size) {
+            try {
+                wait();
+            } catch (InterruptedException interruptedException) {
+                Thread.currentThread().interrupt();
+            }
         }
-        if (this.queue.size() == 0) {
-            notifyAll();
-        }
-        this.queue.add(value);
+        queue.offer(value);
+        notify();
     }
 
-    public synchronized T poll() throws InterruptedException {
-        while (this.queue.size() == 0) {
-            wait();
+    public synchronized T poll() {
+        while (queue.isEmpty()) {
+            try {
+                wait();
+            } catch (InterruptedException interruptedException) {
+                Thread.currentThread().interrupt();
+            }
         }
-        if (this.queue.size() == this.size){
-            notifyAll();
-        }
-
-        return this.queue.poll();
+        notify();
+        return queue.poll();
     }
 
     public synchronized boolean isEmpty() {

@@ -13,15 +13,20 @@ public class UserStorage {
     private volatile Map<User, User> users = new HashMap<>();
 
     public synchronized boolean add(User user) {
-        return users.putIfAbsent(user, user) != null;
+        return users.put(user, user) != null;
     }
 
     public synchronized boolean update(User user) {
-        return users.replace(user, user) != null;
+        User user1 = users.get(user);
+        if (user1 != null) {
+            user1.setAmount(user1.getAmount() + user.getAmount());
+            return true;
+        }
+        return false;
     }
 
     public synchronized boolean delete(User user) {
-        return users.remove(user, user);
+        return users.remove(user) != null;
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
