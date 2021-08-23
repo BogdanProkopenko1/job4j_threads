@@ -13,16 +13,18 @@ import java.util.Date;
 public class Wget implements Runnable {
     private final String url;
     private final int speed;
+    private final String fileName;
 
-    public Wget(String url, int speed) {
+    public Wget(String url, int speed, String fileName) {
         this.url = url;
         this.speed = speed;
+        this.fileName = fileName;
     }
 
     @Override
     public void run() {
         try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream("downloaded.xml")) {
+             FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             long time = System.currentTimeMillis();
@@ -44,7 +46,11 @@ public class Wget implements Runnable {
     public static void main(String[] args) throws InterruptedException {
         String url = args[0];
         int speed = Integer.parseInt(args[1]);
-        Thread wget = new Thread(new Wget(url, speed));
+        String name = args[2];
+        if (name == null || speed == 0 || url == null) {
+            throw new IllegalArgumentException();
+        }
+        Thread wget = new Thread(new Wget(url, speed, name));
         wget.start();
         wget.join();
     }
